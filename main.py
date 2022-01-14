@@ -52,7 +52,7 @@ def train(dataloader, model, loss_fn, optimizer):
         loss.backward()
         optimizer.step()
 
-        if batch%100 == 0:
+        if batch%1 == 0:
             loss, current = loss.item(), batch*len(X)
             print(f"loss: {loss:>7f} [{current:>5d}/{size:>5d}]")
 
@@ -99,9 +99,9 @@ if __name__ == "__main__":
     ## generate a model instance and send it to device here
     print("Generating model...")
     model = NeuralNetwork().to(device)
+    # Load initialization (in order to eliminate the variance induced by random initialization)
+    model.load_state_dict(torch.load("simple_model_fixed_init_v1.pth"))
     print(model)
-    torch.save(model.state_dict(), "simple_model_fixed_init_v1.pth")
-    print(model.state_dict())
 
     ## define loss function and optimizer
     print("Generating loss function and optimizer ...")
