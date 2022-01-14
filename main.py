@@ -2,16 +2,12 @@
 import torch
 from torch import nn
 from torch.utils.data import Dataset, DataLoader
-from torchvision import datasets
-from torchvision.transforms import ToTensor, Lambda, Compose
-import matplotlib.pyplot as plt
 
 ## define model here (structure of the neural network)
 # simplest version: f(x) = ax + b; one layer no activation
 class NeuralNetwork(nn.Module):
     def __init__(self):
         super(NeuralNetwork, self).__init__()
-        self.flatten = nn.Flatten()
         self.linear1 = nn.Linear(1,1)
 
     def forward(self, x):
