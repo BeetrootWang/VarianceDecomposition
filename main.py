@@ -72,6 +72,13 @@ def test(dataloader, model, loss_fn):
     test_loss /= num_batches
     print(f"Test Error: \n Avg loss: {test_loss:>8f} \n")
 
+def get_theta_hat(train_dataset):
+    # TODO: finish get_theta_hat
+    # (a,b) is the minimizer for the following problem
+    # min_{a,b} \sum_{i=1,...,n} (a x_i + b - x_i)^2
+    a,b=0,0
+    return a,b
+
 ## main function
 if __name__ == "__main__":
 
@@ -94,12 +101,15 @@ if __name__ == "__main__":
     my_train_dataset = my_dataset_object(train_dataset_size)
     my_test_dataset = my_dataset_object(test_dataset_size)
     train_dataloader = DataLoader(my_train_dataset, batch_size=batch_size, shuffle=True, num_workers=0)
+    # given the training set, we can compute $\hat \theta^*$, which is an optimizer for $\hat R$ in $\mathcal H$
+    hat_a_star, hat_b_star = get_theta_hat(my_train_dataset)
     test_dataloader = DataLoader(my_test_dataset, batch_size=batch_size, shuffle=True, num_workers=0)
 
     ## generate a model instance and send it to device here
     print("Generating model...")
     model = NeuralNetwork().to(device)
     # Load initialization (in order to eliminate the variance induced by random initialization)
+    # Recall: Q_{PV} consists of 1. initialization 2. data ordering
     model.load_state_dict(torch.load("simple_model_fixed_init_v1.pth"))
     print(model)
 
