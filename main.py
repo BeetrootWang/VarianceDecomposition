@@ -1,51 +1,50 @@
 ## import packages here
 import torch
 from torch import nn
-from torch.utils.data import DataLoader
+from torch.utils.data import Dataset, DataLoader
 from torchvision import datasets
 from torchvision.transforms import ToTensor, Lambda, Compose
 import matplotlib.pyplot as plt
 
 ## define model here (structure of the neural network)
-# TODO: modify the neural network structure and dimensions
+# simplest version: f(x) = ax + b; one layer no activation
 class NeuralNetwork(nn.Module):
     def __init__(self):
         super(NeuralNetwork, self).__init__()
         self.flatten = nn.Flatten()
         self.linear1 = nn.Linear(1,1)
-        self.relu1 = nn.ReLU()
 
     def forward(self, x):
-        x = self.flatten(x)
-        x = self.linear1(x)
-        logits = self.relu1(x)
+        logits = self.linear1(x)
         return logits
 
 ## generate training data here
-# TODO: generate dataloader
 class my_dataset_object(Dataset):
     "my costomized dataset"
-    def __init__(self):
-        pass
+    def __init__(self, dataset_size):
+        # pick <dataset_size> number of points that equally partition [-1,1]
+        self.datapoints_x = 2 * torch.arange(dataset_size) / (dataset_size-1) - 1
+        # underlying f^* is identity
+        self.datapoints_y = self.datapoints_x
 
     def __len__(self):
-        pass
+        return len(self.datapoints_x)
 
-    def __getitem__(self, item):
-        pass
-
-
-## define loss function and optimizer
-print("Generating loss function and optimizer ...")
-# TODO: modify optimizer
-loss_fn = nn.MSELoss()
-optimizer = torch.optim.SGD(model.parameters(), lr=1e-3)
+    def __getitem__(self, idx):
+        if torch.is_tensor(idx):
+            idx = idx.tolist()
+        x = self.datapoints_x[idx]
+        y = self.datapoints_y[idx]
+        xy_pairs = {"x": x, "y": y}
+        return xy_pairs
 
 ## define training main loop
 def train(dataloader, model, loss_fn, optimizer):
     size = len(dataloader.dataset)
     model.train()
-    for batch, (X,y) in enumerate(dataloader):
+    for batch, xy_pairs in enumerate(dataloader):
+        X = xy_pairs["x"]
+        y = xy_pairs["y"]
         X,y = X.to(device), y.to(device)
 
         # compute prediction error
@@ -68,21 +67,25 @@ def test(dataloader, model, loss_fn):
     model.eval()
     test_loss, correct = 0,0
     with torch.no_grad():
-        for X,y in dataloader:
+        for xy_pairs in dataloader:
+            X = xy_pairs["x"]
+            y = xy_pairs["y"]
             X,y = X.to(device), y.to(device)
             pred = model(X)
             test_loss += loss_fn(pred, y).item()
-            # TODO: have a look at pred.argmax
-            correct += (pred.argmax(1)==y).type(torch.float).sum().item()
     test_loss /= num_batches
-    correct /= size
-    print(f"Test Error: \n Accuracy: {(100*correct):>0.1f}, Avg loss: {test_loss:>8f} \n")
+    print(f"Test Error: \n Avg loss: {test_loss:>8f} \n")
 
 ## main function
 if __name__ == "__main__":
 
     ## parameters
-    batch_size = 4
+    train_dataset_size = 10
+    test_dataset_size = 10
+    batch_size = 1
+    epochs = 500
+
+    learning_rate = 1e-3
 
     ## enable CUDA acceleration here
     if torch.cuda.is_available():
@@ -92,18 +95,22 @@ if __name__ == "__main__":
     print(f"Using {device} device.")
 
     ## generate dataloader
-    my_train_dataset, my_test_dataset = my_dataset_object()
+    my_train_dataset = my_dataset_object(train_dataset_size)
+    my_test_dataset = my_dataset_object(test_dataset_size)
     train_dataloader = DataLoader(my_train_dataset, batch_size=batch_size, shuffle=True, num_workers=0)
-    test_dataloader = DataLoader(my_test_dataset, batch_size=batch_sizze, shuffle=True, num_workers=0)
+    test_dataloader = DataLoader(my_test_dataset, batch_size=batch_size, shuffle=True, num_workers=0)
 
     ## generate a model instance and send it to device here
     print("Generating model...")
     model = NeuralNetwork().to(device)
     print(model)
 
+    ## define loss function and optimizer
+    print("Generating loss function and optimizer ...")
+    loss_fn = nn.MSELoss()
+    optimizer = torch.optim.SGD(model.parameters(), lr=learning_rate)
 
     ## start training
-    epochs = 5
     for t in range(epochs):
         print(f"Epoch {t+1} \n ---------------------------------")
         train(train_dataloader, model, loss_fn, optimizer)
