@@ -76,8 +76,8 @@ def test(dataloader, model, loss_fn):
 if __name__ == "__main__":
 
     ## parameters
-    train_dataset_size = 10
-    test_dataset_size = 10
+    train_dataset_size = 5
+    test_dataset_size = 1000
     batch_size = 1
     epochs = 500
 
@@ -100,6 +100,8 @@ if __name__ == "__main__":
     print("Generating model...")
     model = NeuralNetwork().to(device)
     print(model)
+    torch.save(model.state_dict(), "simple_model_fixed_init_v1.pth")
+    print(model.state_dict())
 
     ## define loss function and optimizer
     print("Generating loss function and optimizer ...")
@@ -112,3 +114,7 @@ if __name__ == "__main__":
         train(train_dataloader, model, loss_fn, optimizer)
         test(test_dataloader, model, loss_fn)
     print("Finished!")
+
+    ## save models
+    torch.save(model.state_dict(), "model.pth")
+    print("saved PyTorch Model State to model.pth")
