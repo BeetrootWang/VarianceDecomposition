@@ -28,9 +28,6 @@ class NeuralNetwork(nn.Module):
         logits = self.relu1(x)
         return logits
 
-## define loss here (costomized loss later)
-loss_fn = nn.MSELoss()
-
 ## generate training data here
 # TODO: generate dataloader
 class my_dataset_object(Dataset):
@@ -56,7 +53,7 @@ print(model)
 ## define loss function and optimizer
 print("Generating loss function and optimizer ...")
 # TODO: modify loss function and optimizer
-loss_fn = nn.CrossEntropyLoss()
+loss_fn = nn.MSELoss()
 optimizer = torch.optim.SGD(model.parameters(), lr=1e-3)
 
 ## define training main loop
