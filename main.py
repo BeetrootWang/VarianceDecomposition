@@ -37,6 +37,28 @@ print(model)
 
 ## define loss function and optimizer
 print("Generating loss function and optimizer ...")
+loss_fn = nn.CrossEntropyLoss()
+optimizer = torch.optim.SGD(model.parameters(), lr=1e-3)
+
+## define training main loop
+def train(dataloader, model, loss_fn, optimizer):
+    size = len(dataloader.dataset)
+    model.train()
+    for batch, (X,y) in enumerate(dataloader):
+        X,y = X.to(device), y.to(device)
+
+        # compute prediction error
+        pred = model(X)
+        loss = loss_fn(pred, y)
+
+        # backpropagation
+        optimizer.zero_grad()
+        loss.backward()
+        optimizer.step()
+
+        if batch%100 == 0:
+            loss, current = loss.item(), batch*len(X)
+            print(f"loss: {loss:>7f} [{current:>5d}/{size:>5d}]")
 
 ## start training
 print("start training ...")
