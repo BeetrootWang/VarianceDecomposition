@@ -31,10 +31,24 @@ class NeuralNetwork(nn.Module):
 ## define costomized loss here
 def objective_function(y1,y2):
     # TODO: define loss function
-    return loss
+    pass
 
 ## generate training data here
 # TODO: generate dataloader
+class my_dataset_object(Dataset):
+    "my costomized dataset"
+    def __init__(self):
+        pass
+
+    def __len__(self):
+        pass
+
+    def __getitem__(self, item):
+        pass
+
+my_train_dataset, my_test_dataset = my_dataset_object()
+train_dataloader = DataLoader(my_train_dataset, batch_size=4, shuffle=True, num_workers=0)
+test_dataloader = DataLoader(my_test_dataset, batch_size=4, shuffle=True, num_workers=0)
 
 ## generate a model instance and send it to device here
 print("Generating model...")
