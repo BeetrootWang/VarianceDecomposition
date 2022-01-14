@@ -28,10 +28,8 @@ class NeuralNetwork(nn.Module):
         logits = self.relu1(x)
         return logits
 
-## define costomized loss here
-def objective_function(y1,y2):
-    # TODO: define loss function
-    pass
+## define loss here (costomized loss later)
+loss_fn = nn.MSELoss()
 
 ## generate training data here
 # TODO: generate dataloader
