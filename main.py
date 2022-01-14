@@ -14,6 +14,7 @@ else:
 print(f"Using {device} device.")
 
 ## define model here (structure of the neural network)
+# TODO: modify the neural network structure and dimensions
 class NeuralNetwork(nn.Module):
     def __init__(self):
         super(NeuralNetwork, self).__init__()
@@ -29,6 +30,7 @@ class NeuralNetwork(nn.Module):
 
 
 ## generate training data here
+# TODO: generate dataloader
 
 ## generate a model instance and send it to device here
 print("Generating model...")
@@ -37,6 +39,7 @@ print(model)
 
 ## define loss function and optimizer
 print("Generating loss function and optimizer ...")
+# TODO: modify loss function and optimizer
 loss_fn = nn.CrossEntropyLoss()
 optimizer = torch.optim.SGD(model.parameters(), lr=1e-3)
 
@@ -60,5 +63,29 @@ def train(dataloader, model, loss_fn, optimizer):
             loss, current = loss.item(), batch*len(X)
             print(f"loss: {loss:>7f} [{current:>5d}/{size:>5d}]")
 
+## define the testing main loop (may not be necessary here
+def test(dataloader, model, loss_fn):
+    size = len(dataloader.dataset)
+    num_batches = len(dataloader)
+    model.eval()
+    test_loss, correct = 0,0
+    with torch.no_grad():
+        for X,y in dataloader:
+            X,y = X.to(device), y.to(device)
+            pred = model(X)
+            test_loss += loss_fn(pred, y).item()
+            # TODO: have a look at pred.argmax
+            correct += (pred.argmax(1)==y).type(torch.float).sum().item()
+    test_loss /= num_batches
+    correct /= size
+    print(f"Test Error: \n Accuracy: {(100*correct):>0.1f}, Avg loss: {test_loss:>8f} \n")
+
+
+
 ## start training
-print("start training ...")
+epochs = 5
+for t in range(epochs):
+    print(f"Epoch {t+1} \n ---------------------------------")
+    train(train_dataloader, model, loss_fn, optimizer)
+    test(test_dataloader, model, loss_fn)
+print("Finished!")
