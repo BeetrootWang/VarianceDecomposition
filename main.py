@@ -6,13 +6,6 @@ from torchvision import datasets
 from torchvision.transforms import ToTensor, Lambda, Compose
 import matplotlib.pyplot as plt
 
-## enable CUDA acceleration here
-if torch.cuda.is_available():
-    device = "cuda"
-else:
-    device = "cpu"
-print(f"Using {device} device.")
-
 ## define model here (structure of the neural network)
 # TODO: modify the neural network structure and dimensions
 class NeuralNetwork(nn.Module):
@@ -41,18 +34,10 @@ class my_dataset_object(Dataset):
     def __getitem__(self, item):
         pass
 
-my_train_dataset, my_test_dataset = my_dataset_object()
-train_dataloader = DataLoader(my_train_dataset, batch_size=4, shuffle=True, num_workers=0)
-test_dataloader = DataLoader(my_test_dataset, batch_size=4, shuffle=True, num_workers=0)
-
-## generate a model instance and send it to device here
-print("Generating model...")
-model = NeuralNetwork().to(device)
-print(model)
 
 ## define loss function and optimizer
 print("Generating loss function and optimizer ...")
-# TODO: modify loss function and optimizer
+# TODO: modify optimizer
 loss_fn = nn.MSELoss()
 optimizer = torch.optim.SGD(model.parameters(), lr=1e-3)
 
@@ -93,12 +78,34 @@ def test(dataloader, model, loss_fn):
     correct /= size
     print(f"Test Error: \n Accuracy: {(100*correct):>0.1f}, Avg loss: {test_loss:>8f} \n")
 
+## main function
+if __name__ == "__main__":
+
+    ## parameters
+    batch_size = 4
+
+    ## enable CUDA acceleration here
+    if torch.cuda.is_available():
+        device = "cuda"
+    else:
+        device = "cpu"
+    print(f"Using {device} device.")
+
+    ## generate dataloader
+    my_train_dataset, my_test_dataset = my_dataset_object()
+    train_dataloader = DataLoader(my_train_dataset, batch_size=batch_size, shuffle=True, num_workers=0)
+    test_dataloader = DataLoader(my_test_dataset, batch_size=batch_sizze, shuffle=True, num_workers=0)
+
+    ## generate a model instance and send it to device here
+    print("Generating model...")
+    model = NeuralNetwork().to(device)
+    print(model)
 
 
-## start training
-epochs = 5
-for t in range(epochs):
-    print(f"Epoch {t+1} \n ---------------------------------")
-    train(train_dataloader, model, loss_fn, optimizer)
-    test(test_dataloader, model, loss_fn)
-print("Finished!")
+    ## start training
+    epochs = 5
+    for t in range(epochs):
+        print(f"Epoch {t+1} \n ---------------------------------")
+        train(train_dataloader, model, loss_fn, optimizer)
+        test(test_dataloader, model, loss_fn)
+    print("Finished!")
