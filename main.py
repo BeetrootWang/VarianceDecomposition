@@ -76,8 +76,8 @@ def test(dataloader, model, loss_fn):
 if __name__ == "__main__":
 
     ## parameters
-    train_dataset_size = 5
-    test_dataset_size = 1000
+    train_dataset_size = 3
+    test_dataset_size = 100
     batch_size = 1
     epochs = 500
 
@@ -118,3 +118,4 @@ if __name__ == "__main__":
     ## save models
     torch.save(model.state_dict(), "model.pth")
     print("saved PyTorch Model State to model.pth")
+    print(f"\\hat a = {model.state_dict()['linear1.weight'].item():>7f} , \\hat b = {model.state_dict()['linear1.bias'].item():>7f}")
