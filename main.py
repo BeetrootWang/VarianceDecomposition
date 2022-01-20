@@ -5,6 +5,7 @@ from torch.utils.data import Dataset, DataLoader
 
 ## define model here (structure of the neural network)
 # simplest version: f(x) = ax + b; one layer no activation
+# TODO: define a more complicated problem (Neural Network)
 class NeuralNetwork(nn.Module):
     def __init__(self):
         super(NeuralNetwork, self).__init__()
@@ -15,10 +16,11 @@ class NeuralNetwork(nn.Module):
         return logits
 
 ## generate training data here
+# TODO:  randomness into the dataset
 class my_dataset_object(Dataset):
     "my costomized dataset"
-    def __init__(self, dataset_size):
-        # pick <dataset_size> number of points that equally partition [-1,1]
+    def __init__(self, dataset_size, random_seed):
+        # <dataset_size> number of data points uniformly distributed on [-1,1]
         self.datapoints_x = 2 * torch.arange(dataset_size) / (dataset_size-1) - 1
         # underlying f^* is identity
         self.datapoints_y = self.datapoints_x
