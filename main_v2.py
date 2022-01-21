@@ -1,3 +1,10 @@
+## Description
+# This file run simple experiment with known (pre-saved)
+#   - dataset
+#   - parameter initialization
+# Used for computing sample variance of the forward function at a specific input x
+# (and other relevant sample statistics)
+
 ## import packages here
 import torch
 from torch import nn
