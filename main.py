@@ -74,13 +74,6 @@ def test(dataloader, model, loss_fn):
     test_loss /= num_batches
     print(f"Test Error: \n Avg loss: {test_loss:>8f} \n")
 
-def get_theta_hat(train_dataset):
-    # TODO: finish get_theta_hat
-    # (a,b) is the minimizer for the following problem
-    # min_{a,b} \sum_{i=1,...,n} (a x_i + b - x_i)^2
-    a,b=0,0
-    return a,b
-
 ## main function
 if __name__ == "__main__":
 
