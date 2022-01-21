@@ -19,7 +19,7 @@ class NeuralNetwork(nn.Module):
 # TODO:  randomness into the dataset
 class my_dataset_object(Dataset):
     "my costomized dataset"
-    def __init__(self, dataset_size, random_seed):
+    def __init__(self, dataset_size):
         # <dataset_size> number of data points uniformly distributed on [-1,1]
         self.datapoints_x = 2 * torch.arange(dataset_size) / (dataset_size-1) - 1
         # underlying f^* is identity
@@ -97,7 +97,7 @@ if __name__ == "__main__":
     my_test_dataset = my_dataset_object(test_dataset_size)
     train_dataloader = DataLoader(my_train_dataset, batch_size=batch_size, shuffle=True, num_workers=0)
     # given the training set, we can compute $\hat \theta^*$, which is an optimizer for $\hat R$ in $\mathcal H$
-    hat_a_star, hat_b_star = get_theta_hat(my_train_dataset)
+    # hat_a_star, hat_b_star = get_theta_hat(my_train_dataset)
     test_dataloader = DataLoader(my_test_dataset, batch_size=batch_size, shuffle=True, num_workers=0)
 
     ## generate a model instance and send it to device here
