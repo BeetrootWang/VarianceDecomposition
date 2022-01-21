@@ -2,6 +2,7 @@
 import torch
 from torch import nn
 from torch.utils.data import Dataset, DataLoader
+import numpy as np
 
 ## define model here (structure of the neural network)
 # simplest version: f(x) = ax + b; one layer no activation
@@ -73,9 +74,9 @@ def test(dataloader, model, loss_fn):
     test_loss /= num_batches
     print(f"Test Error: \n Avg loss: {test_loss:>8f} \n")
 
-## main function
-if __name__ == "__main__":
 
+def main_ijk(ii,jj,kk):
+    ## get the kk-th training result for ii-th dataset, jj-th initialization
     ## parameters
     train_dataset_size = 3
     test_dataset_size = 100
@@ -92,11 +93,12 @@ if __name__ == "__main__":
     print(f"Using {device} device.")
 
     ## generate dataloader
-    my_train_dataset = my_dataset_object(train_dataset_size)
-    my_test_dataset = my_dataset_object(test_dataset_size)
+    training_filename = 'data/training_1000_' + str(ii)
+    ting_filename = 'data/testing_1000_' + str(ii)
+    my_train_dataset = my_dataset_object(np.load(training_filename))
+    my_test_dataset = my_dataset_object(np.load(testing_filename))
     import pdb; pdb.set_trace()
     train_dataloader = DataLoader(my_train_dataset, batch_size=batch_size, shuffle=True, num_workers=0)
-    # given the training set, we can compute $\hat \theta^*$, which is an optimizer for $\hat R$ in $\mathcal H$
     test_dataloader = DataLoader(my_test_dataset, batch_size=batch_size, shuffle=True, num_workers=0)
 
     ## generate a model instance and send it to device here
@@ -123,3 +125,7 @@ if __name__ == "__main__":
     torch.save(model.state_dict(), "model.pth")
     print("saved PyTorch Model State to model.pth")
     print(f"\\hat a = {model.state_dict()['linear1.weight'].item():>7f} , \\hat b = {model.state_dict()['linear1.bias'].item():>7f}")
+
+## main function
+if __name__ == "__main__":
+    main_ijk(1,1,1)
