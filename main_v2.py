@@ -85,16 +85,9 @@ def main_ijk(ii,jj,kk):
 
     learning_rate = 1e-3
 
-    ## enable CUDA acceleration here
-    if torch.cuda.is_available():
-        device = "cuda"
-    else:
-        device = "cpu"
-    print(f"Using {device} device.")
-
     ## generate dataloader
-    training_filename = 'data/training_1000_' + str(ii)
-    ting_filename = 'data/testing_1000_' + str(ii)
+    training_filename = 'data/training_1000_' + str(ii) + '.npy'
+    testing_filename = 'data/testing_1000_' + str(ii) + '.npy'
     my_train_dataset = my_dataset_object(np.load(training_filename))
     my_test_dataset = my_dataset_object(np.load(testing_filename))
     import pdb; pdb.set_trace()
@@ -128,4 +121,13 @@ def main_ijk(ii,jj,kk):
 
 ## main function
 if __name__ == "__main__":
+
+    ## enable CUDA acceleration here
+    if torch.cuda.is_available():
+        device = "cuda"
+    else:
+        device = "cpu"
+    print(f"Using {device} device.")
+
+    ## run a single training procedure
     main_ijk(1,1,1)
