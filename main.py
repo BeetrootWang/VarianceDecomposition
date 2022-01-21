@@ -95,9 +95,9 @@ if __name__ == "__main__":
     ## generate dataloader
     my_train_dataset = my_dataset_object(train_dataset_size)
     my_test_dataset = my_dataset_object(test_dataset_size)
+    import pdb; pdb.set_trace()
     train_dataloader = DataLoader(my_train_dataset, batch_size=batch_size, shuffle=True, num_workers=0)
     # given the training set, we can compute $\hat \theta^*$, which is an optimizer for $\hat R$ in $\mathcal H$
-    # hat_a_star, hat_b_star = get_theta_hat(my_train_dataset)
     test_dataloader = DataLoader(my_test_dataset, batch_size=batch_size, shuffle=True, num_workers=0)
 
     ## generate a model instance and send it to device here
