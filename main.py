@@ -5,7 +5,6 @@ from torch.utils.data import Dataset, DataLoader
 
 ## define model here (structure of the neural network)
 # simplest version: f(x) = ax + b; one layer no activation
-# TODO: define a more complicated problem (Neural Network)
 class NeuralNetwork(nn.Module):
     def __init__(self):
         super(NeuralNetwork, self).__init__()
@@ -16,7 +15,6 @@ class NeuralNetwork(nn.Module):
         return logits
 
 ## generate training data here
-# TODO:  randomness into the dataset
 class my_dataset_object(Dataset):
     "my costomized dataset"
     def __init__(self, dataset_size):

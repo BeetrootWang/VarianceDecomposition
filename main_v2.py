@@ -19,9 +19,8 @@ class NeuralNetwork(nn.Module):
 # TODO:  randomness into the dataset
 class my_dataset_object(Dataset):
     "my costomized dataset"
-    def __init__(self, dataset_size):
-        # <dataset_size> number of data points uniformly distributed on [-1,1]
-        self.datapoints_x = 2 * torch.arange(dataset_size) / (dataset_size-1) - 1
+    def __init__(self, datapoints_x):
+        self.datapoints_x = torch.from_numpy(datapoints_x)
         # underlying f^* is identity
         self.datapoints_y = self.datapoints_x
 
