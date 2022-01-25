@@ -10,10 +10,18 @@ import numpy as np
 class NeuralNetwork(nn.Module):
     def __init__(self):
         super(NeuralNetwork, self).__init__()
-        self.linear1 = nn.Linear(1,1)
+        self.flatten = nn.Flatten()
+        self.a_block = nn.Sequential(
+            nn.Linear(10,20),
+            nn.ReLU(),
+            nn.Linear(20,20),
+            nn.ReLU(),
+            nn.Linear(20,10)
+        )
 
     def forward(self, x):
-        logits = self.linear1(x)
+        logits = self.flatten(x)
+        logits = self.a_block(logits)
         return logits
 
 ## generate training data here
@@ -22,6 +30,8 @@ class my_dataset_object(Dataset):
     "my costomized dataset"
     def __init__(self, datapoints_x):
         self.datapoints_x = torch.from_numpy(datapoints_x)
+        self.datapoints_x = self.datapoints_x.float() #  Add this to meet the requirement of the input for nn.Linear()
+
         # underlying f^* is identity
         self.datapoints_y = self.datapoints_x
 
@@ -54,8 +64,8 @@ def train(dataloader, model, loss_fn, optimizer):
         loss.backward()
         optimizer.step()
 
-        if batch%1 == 0:
-            loss, current = loss.item(), batch*len(X)
+        if (batch+1)%200 == 0:
+            loss, current = loss.item(), (batch+1)*len(X)
             print(f"loss: {loss:>7f} [{current:>5d}/{size:>5d}]")
 
 ## define the testing main loop (may not be necessary here
@@ -78,10 +88,8 @@ def test(dataloader, model, loss_fn):
 def main_ijk(ii,jj,kk):
     ## get the kk-th training result for ii-th dataset, jj-th initialization
     ## parameters
-    train_dataset_size = 3
-    test_dataset_size = 100
     batch_size = 1
-    epochs = 500
+    epochs = 1
 
     learning_rate = 1e-3
 
@@ -90,7 +98,6 @@ def main_ijk(ii,jj,kk):
     testing_filename = 'data/testing_1000_' + str(ii) + '.npy'
     my_train_dataset = my_dataset_object(np.load(training_filename))
     my_test_dataset = my_dataset_object(np.load(testing_filename))
-    import pdb; pdb.set_trace()
     train_dataloader = DataLoader(my_train_dataset, batch_size=batch_size, shuffle=True, num_workers=0)
     test_dataloader = DataLoader(my_test_dataset, batch_size=batch_size, shuffle=True, num_workers=0)
 
@@ -99,7 +106,6 @@ def main_ijk(ii,jj,kk):
     model = NeuralNetwork().to(device)
     # Load initialization (in order to eliminate the variance induced by random initialization)
     # Recall: Q_{PV} consists of 1. initialization 2. data ordering
-    model.load_state_dict(torch.load("simple_model_fixed_init_v1.pth"))
     print(model)
 
     ## define loss function and optimizer
@@ -117,7 +123,6 @@ def main_ijk(ii,jj,kk):
     ## save models
     torch.save(model.state_dict(), "model.pth")
     print("saved PyTorch Model State to model.pth")
-    print(f"\\hat a = {model.state_dict()['linear1.weight'].item():>7f} , \\hat b = {model.state_dict()['linear1.bias'].item():>7f}")
 
 ## main function
 if __name__ == "__main__":
