@@ -13,7 +13,6 @@ import numpy as np
 
 ## define model here (structure of the neural network)
 # simplest version: f(x) = ax + b; one layer no activation
-# TODO: define a more complicated problem (Neural Network)
 class NeuralNetwork(nn.Module):
     def __init__(self):
         super(NeuralNetwork, self).__init__()
@@ -32,7 +31,6 @@ class NeuralNetwork(nn.Module):
         return logits
 
 ## generate training data here
-# TODO:  randomness into the dataset
 class my_dataset_object(Dataset):
     "my costomized dataset"
     def __init__(self, datapoints_x):
@@ -91,7 +89,6 @@ def test(dataloader, model, loss_fn):
     test_loss /= num_batches
     print(f"Test Error: \n Avg loss: {test_loss:>8f} \n")
 
-
 def main_ijk(ii,jj,kk):
     ## get the kk-th training result for ii-th dataset, jj-th initialization
     ## parameters
@@ -113,7 +110,11 @@ def main_ijk(ii,jj,kk):
     model = NeuralNetwork().to(device)
     # Load initialization (in order to eliminate the variance induced by random initialization)
     # Recall: Q_{PV} consists of 1. initialization 2. data ordering
+    model.load_state_dict(torch.load('./initialization/v2_init_' + str(jj) + '.pth'))
     print(model)
+
+    # kk is the random seed for the remaining operations (data-ordering)
+    torch.manual_seed(kk)
 
     ## define loss function and optimizer
     print("Generating loss function and optimizer ...")
