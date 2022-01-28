@@ -10,6 +10,7 @@ import torch
 from torch import nn
 from torch.utils.data import Dataset, DataLoader
 import numpy as np
+import pandas as pd
 
 ## define model here (structure of the neural network)
 # simplest version: f(x) = ax + b; one layer no activation
@@ -128,9 +129,10 @@ def main_ijk(ii,jj,kk):
         test(test_dataloader, model, loss_fn)
     print("Finished!")
 
-    ## save models
-    torch.save(model.state_dict(), "model.pth")
-    print("saved PyTorch Model State to model.pth")
+    return model.state_dict()
+    # ## save models
+    # torch.save(model.state_dict(), "model.pth")
+    # print("saved PyTorch Model State to model.pth")
 
 ## main function
 if __name__ == "__main__":
@@ -142,5 +144,23 @@ if __name__ == "__main__":
         device = "cpu"
     print(f"Using {device} device.")
 
-    ## run a single training procedure
-    main_ijk(1,1,1)
+    ## run iid results with n1 = n2 = n3 = n = 10
+    n = 10
+    for ii in range(n):
+        for jj in range(n):
+            for kk in range(n):
+                model_state_dict = main_ijk(ii,jj,kk)
+                w = torch.tensor([]).to(device)
+                for key in model_state_dict.keys():
+                    w = torch.cat((w, model_state_dict[key].reshape(-1)))
+                w = pd.DataFrame(w.reshape(-1).cpu()).T
+                w.index = [(ii,jj,kk)]
+                if ii==0 and jj==0 and kk==0:
+                    result = w
+                else:
+                    result = pd.concat([result,w])
+                if kk == n-1:
+                    result.to_csv('tmp_saved_data.csv')
+
+    ## save result
+
