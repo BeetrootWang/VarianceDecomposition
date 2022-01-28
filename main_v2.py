@@ -162,5 +162,3 @@ if __name__ == "__main__":
                 if kk == n-1:
                     result.to_csv('tmp_saved_data.csv')
 
-    ## save result
-
